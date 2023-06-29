@@ -6,7 +6,12 @@
 	"scripts": {
 		"start": "vite",
 		"build": "tsc && vite build",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"clean": "rimraf build"
+	},
+	"dependencies": {
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0"
 	},
 	"author": "kennarddh",
 	"license": "MIT"

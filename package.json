@@ -8,7 +8,6 @@
 		"lint:fix": "eslint --fix example/**/*.{ts,tsx,json} packages/**/*.{ts,tsx,json",
 		"prettier:fix": "prettier -w \"example/**/*.{ts,tsx,json,md}\" \"packages/**/*.{ts,tsx,json}\" \"*.md\" \"index.html\"",
 		"prettier:check": "prettier -c \"example/**/*.{ts,tsx,json,md}\" \"packages/**/*.{ts,tsx,json}\" \"*.md\" \"index.html\"",
-		"clean": "rimraf build",
 		"pre-commit": "lint-staged --quiet",
 		"pre-push": "",
 		"prepare": "husky install"
@@ -65,9 +64,5 @@
 		"vite": "^4.3.9",
 		"vite-plugin-checker": "^0.6.0",
 		"vite-plugin-svgr": "^3.2.0"
-	},
-	"dependencies": {
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0"
 	}
 }
