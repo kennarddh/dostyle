@@ -5,8 +5,5 @@
 		"moduleResolution": "Node",
 		"allowSyntheticDefaultImports": true
 	},
-	"include": [
-		"babel.config.js",
-		".eslintrc.js",
-	]
+	"include": [".eslintrc.js"]
 }

@@ -7,7 +7,7 @@ module.exports = {
 	},
 	overrides: [
 		{
-			files: ['babel.config.js', '.eslintrc.js'],
+			files: ['.eslintrc.js'],
 			parserOptions: {
 				ecmaFeatures: {
 					jsx: false,
