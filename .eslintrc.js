@@ -4,16 +4,10 @@ module.exports = {
 	env: {
 		browser: true,
 		es2021: true,
-		'jest/globals': true,
 	},
 	overrides: [
 		{
-			files: [
-				'babel.config.js',
-				'.eslintrc.js',
-				'jest.config.ts',
-				'jest.setup.ts',
-			],
+			files: ['babel.config.js', '.eslintrc.js'],
 			parserOptions: {
 				ecmaFeatures: {
 					jsx: false,
@@ -32,13 +26,12 @@ module.exports = {
 		'plugin:import/recommended',
 		'plugin:import/typescript',
 		'plugin:react-hooks/recommended',
-		'plugin:jest/all',
 		'plugin:json/recommended',
 		'plugin:security/recommended',
 		'plugin:@typescript-eslint/eslint-recommended',
 		'plugin:@typescript-eslint/recommended',
 	],
-	plugins: ['react', 'prettier', 'jsx-a11y', 'jest', '@typescript-eslint'],
+	plugins: ['react', 'prettier', 'jsx-a11y', '@typescript-eslint'],
 	parserOptions: {
 		ecmaFeatures: {
 			jsx: true,
@@ -65,9 +58,6 @@ module.exports = {
 			typescript: {},
 		},
 		react: {
-			version: 'detect',
-		},
-		jest: {
 			version: 'detect',
 		},
 	},
