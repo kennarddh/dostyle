@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"target": "ESNext",
 		"useDefineForClassFields": true,
-		"lib": ["DOM", "DOM.Iterable", "ESNext"],
+		"lib": [ "ESNext"],
 		"allowJs": false,
 		"skipLibCheck": true,
 		"esModuleInterop": false,
@@ -13,14 +13,9 @@
 		"moduleResolution": "Node",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
-		"noEmit": true,
-		"jsx": "react-jsx",
-		"baseUrl": "src",
 		"removeComments": true,
 		"sourceMap": true,
 		"noImplicitAny": true,
 		"types": ["jest", "@testing-library/jest-dom"]
-	},
-	"include": ["src"],
-	"references": [{ "path": "./tsconfig.node.json" }]
+	}
 }

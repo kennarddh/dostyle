@@ -8,17 +8,12 @@ module.exports = {
 	},
 	overrides: [
 		{
-			files: [
-				'babel.config.js',
-				'.eslintrc.js',
-				'jest.config.ts',
-				'jest.setup.ts',
-			],
+			files: ['vite.config.ts', '.eslintrc.js'],
 			parserOptions: {
 				ecmaFeatures: {
 					jsx: false,
 				},
-				project: 'tsconfig.node.json',
+				project: './tsconfig.node.json',
 			},
 		},
 	],
