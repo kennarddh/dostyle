@@ -2,17 +2,20 @@ import { FC } from 'react'
 
 import styled from '@dostyle/react'
 
-const Container = styled.div<{ color: string; width: number }>`
+const Container = styled.div<{ width: number }>`
 	background-color: blue;
-	color: ${props => props.color};
 	width: ${({ width }) => width}px;
+`
+
+const Text = styled.p<{ color: string }>`
+	color: ${props => props.color};
 `
 
 const App: FC = () => {
 	return (
-		<Container as='section' color='red' width={200}>
-			<p>1</p>
-			<p>2</p>
+		<Container as='section' width={200}>
+			<Text color='red'>1</Text>
+			<Text color='yellow'>2</Text>
 		</Container>
 	)
 }
