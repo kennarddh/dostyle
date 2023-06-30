@@ -70,6 +70,8 @@ const InterpolationFactory =
 			)
 		}
 
+		Component.displayName = 'Display'
+
 		return Component
 	}
 
