@@ -30,7 +30,6 @@ const InterpolationFactory =
 		}) => {
 			const typedProps = props as unknown as Props
 
-			// Interpolation
 			const parsedExpressions = expressions.map(expression =>
 				typeof expression === 'function'
 					? expression(typedProps)
