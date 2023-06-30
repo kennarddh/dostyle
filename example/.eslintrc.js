@@ -7,12 +7,37 @@ module.exports = {
 	},
 	overrides: [
 		{
-			files: ['vite.config.ts', '.eslintrc.js'],
+			files: [
+				'.eslintrc.js',
+				'tsconfig.json',
+				'tsconfig.node.json',
+				'package.json',
+				'package-lock.json',
+			],
+			parser: 'espree',
 			parserOptions: {
 				ecmaFeatures: {
 					jsx: false,
 				},
-				project: './tsconfig.node.json',
+			},
+			extends: [
+				'eslint:recommended',
+				'plugin:react/recommended',
+				'plugin:import/recommended',
+				'plugin:import/typescript',
+				'plugin:react-hooks/recommended',
+				'plugin:json/recommended',
+				'plugin:security/recommended',
+			],
+			plugins: ['react', 'prettier', 'jsx-a11y'],
+		},
+		{
+			files: ['vite.config.ts'],
+			parserOptions: {
+				ecmaFeatures: {
+					jsx: false,
+				},
+				project: 'tsconfig.node.json',
 			},
 		},
 	],
@@ -40,6 +65,7 @@ module.exports = {
 		sourceType: 'module',
 		project: 'tsconfig.json',
 		tsconfigRootDir: __dirname,
+		extraFileExtensions: ['.json'],
 	},
 	settings: {
 		'import/extensions': ['ts', 'tsx'],

@@ -7,12 +7,7 @@ module.exports = {
 	},
 	overrides: [
 		{
-			files: [
-				'.eslintrc.js',
-				'tsconfig.json',
-				'package.json',
-				'package-lock.json',
-			],
+			files: ['.eslintrc.js', 'tsconfig.json', 'package.json'],
 			parser: 'espree',
 			parserOptions: {
 				ecmaFeatures: {

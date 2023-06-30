@@ -16,5 +16,10 @@
 		"removeComments": true,
 		"sourceMap": true,
 		"noImplicitAny": true
-	}
+	},
+	"references": [
+		{
+			"path": "./packages/react/"
+		}
+	]
 }

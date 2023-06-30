@@ -1,5 +1,5 @@
 {
-	"example//**/*.{ts,tsx,json}": ["prettier -w", "eslint --fix"],
+	"example/**/*.{ts,tsx,json}": ["prettier -w", "eslint --fix"],
 	"packages/**/*.{ts,tsx,json}": ["prettier -w", "eslint --fix"],
 	"*.md": "prettier -w"
 }

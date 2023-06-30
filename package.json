@@ -4,8 +4,8 @@
 	"description": "DoStyle Zero Runtime CSS in JS Library",
 	"main": "src/index.js",
 	"scripts": {
-		"lint:check": "eslint example/**/*.{ts,tsx,json} packages/**/*.{ts,tsx,json",
-		"lint:fix": "eslint --fix example/**/*.{ts,tsx,json} packages/**/*.{ts,tsx,json",
+		"lint:check": "eslint example/**/*.{ts,tsx,json} packages/**/*.{ts,tsx,json}",
+		"lint:fix": "eslint --fix example/**/*.{ts,tsx,json} packages/**/*.{ts,tsx,json}",
 		"prettier:fix": "prettier -w \"example/**/*.{ts,tsx,json,md}\" \"packages/**/*.{ts,tsx,json}\" \"*.md\" \"index.html\"",
 		"prettier:check": "prettier -c \"example/**/*.{ts,tsx,json,md}\" \"packages/**/*.{ts,tsx,json}\" \"*.md\" \"index.html\"",
 		"pre-commit": "lint-staged --quiet",
@@ -14,13 +14,12 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/kennarddh/reactjs-boilerplate.git"
+		"url": "git+https://github.com/kennarddh/dostyle.git"
 	},
 	"keywords": [
 		"react",
 		"reactjs",
-		"boilerplate",
-		"vite"
+		"dostyle"
 	],
 	"author": "kennarddh",
 	"license": "MIT",
