@@ -13,7 +13,7 @@ interface IDefaultProps {
 	ref?: Ref<HTMLElementName>
 }
 
-const HypenCashToCamelCase = (str: string) =>
+const HypenCaseToCamelCase = (str: string) =>
 	str.replace(/-([a-z])/g, (_, up) => up.toUpperCase())
 
 const InterpolationFactory =
@@ -54,7 +54,7 @@ const InterpolationFactory =
 				)
 
 			const camelCasedRules = rules.map(rule => [
-				HypenCashToCamelCase(rule[0].toLowerCase()),
+				HypenCaseToCamelCase(rule[0].toLowerCase()),
 				rule[1],
 			])
 
