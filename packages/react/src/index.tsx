@@ -8,7 +8,7 @@ type IValidExpression<Props> =
 type HTMLElementName = keyof JSX.IntrinsicElements
 
 type IInvalidProps = 'as' | 'ref'
-interface IDefaultProps extends Record<string | number | symbol, unknown> {
+interface IDefaultProps {
 	as?: HTMLElementName
 	ref?: Ref<HTMLElementName>
 }
@@ -17,18 +17,22 @@ const HypenCashToCamelCase = (str: string) =>
 	str.replace(/-([a-z])/g, (_, up) => up.toUpperCase())
 
 const InterpolationFactory =
-	<Props extends IDefaultProps = IDefaultProps>(element: HTMLElementName) =>
-	(
+	(element: HTMLElementName) =>
+	<
+		Props extends Record<string | number | symbol, unknown> = Record<
+			string,
+			never
+		>
+	>(
 		strings: TemplateStringsArray,
 		...expressions: IValidExpression<
-			Omit<Props & IDefaultProps, IInvalidProps>
+			Omit<Props, IInvalidProps> & Omit<IDefaultProps, 'ref'>
 		>[]
 	) => {
-		const Component: FC<Props & { children: ReactNode[] | ReactNode }> = ({
-			children,
-			...props
-		}) => {
-			const typedProps = props as unknown as Props
+		const Component: FC<
+			Props & IDefaultProps & { children: ReactNode[] | ReactNode }
+		> = ({ children, ...props }) => {
+			const typedProps = props as Props & IDefaultProps
 
 			const parsedExpressions = expressions.map(expression =>
 				typeof expression === 'function'
