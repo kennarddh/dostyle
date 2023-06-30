@@ -3,11 +3,14 @@ import { FC } from 'react'
 import styled from '@dostyle/react'
 
 const Container = styled.div`
-	color: blue;
+	background-color: blue;
 `
 
 const App: FC = () => {
-	return <div></div>
+	return <Container>
+		<p>1</p>
+		<p>2</p>
+	</Container>
 }
 
 export default App
