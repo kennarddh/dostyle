@@ -7,10 +7,12 @@ const Container = styled.div`
 `
 
 const App: FC = () => {
-	return <Container>
-		<p>1</p>
-		<p>2</p>
-	</Container>
+	return (
+		<Container as='section'>
+			<p>1</p>
+			<p>2</p>
+		</Container>
+	)
 }
 
 export default App

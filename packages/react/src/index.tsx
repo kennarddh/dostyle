@@ -17,8 +17,8 @@ const HypenCashToCamelCase = (str: string) =>
 	str.replace(/-([a-z])/g, (_, up) => up.toUpperCase())
 
 const InterpolationFactory =
-	(element: HTMLElementName) =>
-	<Props extends Omit<IDefaultProps, 'ref'>>(
+	<Props extends IDefaultProps = IDefaultProps>(element: HTMLElementName) =>
+	(
 		strings: TemplateStringsArray,
 		...expressions: IValidExpression<
 			Omit<Props & IDefaultProps, IInvalidProps>
@@ -61,7 +61,7 @@ const InterpolationFactory =
 				: [children]
 
 			return createElement(
-				element,
+				typedProps.as ?? element,
 				{
 					style,
 				},
