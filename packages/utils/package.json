@@ -17,5 +17,8 @@
 	"bugs": {
 		"url": "https://github.com/kennarddh/dostyle.git"
 	},
-	"homepage": "https://github.com/kennarddh/dostyle.git#readme"
+	"homepage": "https://github.com/kennarddh/dostyle.git#readme",
+	"scripts": {
+		"build": "tsc -b"
+	}
 }

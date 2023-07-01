@@ -28,5 +28,8 @@
 	},
 	"dependencies": {
 		"@dostyle/utils": "^1.0.0"
+	},
+	"scripts": {
+		"build": "tsc -b"
 	}
 }
