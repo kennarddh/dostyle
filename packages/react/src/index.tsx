@@ -1,4 +1,4 @@
-import { FC, JSX, ReactNode, Ref, createElement } from 'react'
+import { FC, JSX, ReactNode, RefObject, createElement, forwardRef } from 'react'
 
 import { HypenCaseToCamelCase } from '@dostyle/utils'
 
@@ -12,7 +12,7 @@ type IHTMLElementName = keyof JSX.IntrinsicElements
 type IInvalidProps = 'as' | 'ref'
 interface IDefaultProps {
 	as?: IHTMLElementName
-	ref?: Ref<IHTMLElementName>
+	ref?: RefObject<HTMLElement>
 }
 
 type IUserProps = Record<string | number | symbol, unknown>
@@ -24,12 +24,10 @@ type IProps<
 	IDefaultProps &
 	JSX.IntrinsicElements[Element]
 
-type IChildren = ReactNode[] | ReactNode
-
 type IComponentProps<
 	Element extends IHTMLElementName,
 	UserProps extends IUserProps
-> = IProps<Element, UserProps> & { children: IChildren }
+> = IProps<Element, UserProps>
 
 type IComponent<Element extends IHTMLElementName> = <
 	UserProps extends IUserProps = Record<string, never>
@@ -46,11 +44,10 @@ const ComponentFactory =
 			Omit<IProps<Element, UserProps>, 'ref'>
 		>[]
 	) => {
-		const Component: FC<IComponentProps<Element, UserProps>> = ({
-			children,
-			ref,
-			...props
-		}) => {
+		const Component = forwardRef<
+			HTMLElement,
+			IComponentProps<Element, UserProps>
+		>(({ children, ...props }, ref) => {
 			const parsedExpressions: IValidConstantExpression[] = []
 
 			for (const expression of expressions) {
@@ -79,9 +76,11 @@ const ComponentFactory =
 				rule[1],
 			])
 			const style = Object.fromEntries(camelCasedRules)
+
 			const parsedChildren = Array.isArray(children)
 				? children
 				: [children]
+
 			return createElement(
 				props.as ?? element,
 				{
@@ -91,7 +90,7 @@ const ComponentFactory =
 				},
 				...parsedChildren
 			)
-		}
+		})
 
 		Component.displayName = 'Display'
 
