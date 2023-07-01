@@ -20,5 +20,8 @@
 	"homepage": "https://github.com/kennarddh/dostyle.git#readme",
 	"scripts": {
 		"build": "tsc -b"
-	}
+	},
+	"files": [
+		"./dist/"
+	]
 }

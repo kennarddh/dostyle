@@ -31,5 +31,8 @@
 	},
 	"scripts": {
 		"build": "tsc -b"
-	}
+	},
+	"files": [
+		"./dist/"
+	]
 }
