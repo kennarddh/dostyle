@@ -13,7 +13,11 @@ const Text = styled.p<{ color: string }>`
 
 const App: FC = () => {
 	return (
-		<Container as='section' width={200}>
+		<Container
+			as='section'
+			width={200}
+			onClick={() => console.log('Container clicked')}
+		>
 			<Text color='red'>1</Text>
 			<Text color='yellow'>2</Text>
 		</Container>
