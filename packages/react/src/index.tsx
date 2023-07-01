@@ -1,4 +1,4 @@
-import { FC, JSX, ReactNode, RefObject, createElement, forwardRef } from 'react'
+import { FC, JSX, RefObject, createElement, forwardRef } from 'react'
 
 import { HypenCaseToCamelCase } from '@dostyle/utils'
 
@@ -10,9 +10,9 @@ type IValidExpression<Props> =
 type IHTMLElementName = keyof JSX.IntrinsicElements
 
 type IInvalidProps = 'as' | 'ref'
-interface IDefaultProps {
+interface IDefaultProps<Element extends IHTMLElementName> {
 	as?: IHTMLElementName
-	ref?: RefObject<HTMLElement>
+	ref?: RefObject<GetHtmlElementFromName<Element>>
 }
 
 type IUserProps = Record<string | number | symbol, NonNullable<unknown>>
@@ -21,7 +21,7 @@ type IProps<
 	Element extends IHTMLElementName,
 	UserProps extends IUserProps
 > = Omit<UserProps, IInvalidProps> &
-	IDefaultProps &
+	IDefaultProps<Element> &
 	JSX.IntrinsicElements[Element]
 
 type IComponentProps<
@@ -36,6 +36,16 @@ type IComponent<Element extends IHTMLElementName> = <
 	...expressions: IValidExpression<Omit<IProps<Element, UserProps>, 'ref'>>[]
 ) => FC<IComponentProps<Element, UserProps>>
 
+type GetHtmlElementFromName<Element extends IHTMLElementName> = NonNullable<
+	Exclude<
+		NonNullable<
+			Exclude<NonNullable<JSX.IntrinsicElements[Element]['ref']>, string>
+		>,
+		(...args: any[]) => any // eslint-disable-line @typescript-eslint/no-explicit-any
+	>['current']
+>
+
+// as props is not used as element type
 const ComponentFactory =
 	<Element extends IHTMLElementName>(element: Element) =>
 	<UserProps extends IUserProps = Record<string, NonNullable<unknown>>>(
@@ -45,7 +55,7 @@ const ComponentFactory =
 		>[]
 	) => {
 		const Component = forwardRef<
-			HTMLElement,
+			GetHtmlElementFromName<Element>,
 			IComponentProps<Element, UserProps>
 		>(({ children, ...props }, ref) => {
 			const parsedExpressions: IValidConstantExpression[] = []
