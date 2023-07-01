@@ -5,6 +5,7 @@ module.exports = {
 		browser: true,
 		es2021: true,
 	},
+	ignorePatterns: ["/dist/**/*"],
 	overrides: [
 		{
 			files: ['.eslintrc.js', 'tsconfig.json', 'package.json'],
