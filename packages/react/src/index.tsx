@@ -83,7 +83,7 @@ type Interpolation = ReturnType<typeof InterpolationFactory>
 type IStyled = Record<HTMLElementName, Interpolation>
 
 const styled = new Proxy<IStyled>({} as IStyled, {
-	get(_, prop: HTMLElementName, __) {
+	get(_, prop: HTMLElementName) {
 		return InterpolationFactory(prop)
 	},
 })
