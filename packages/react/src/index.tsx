@@ -1,5 +1,7 @@
 import { FC, JSX, ReactNode, Ref, createElement } from 'react'
 
+import { HypenCaseToCamelCase } from '@dostyle/utils'
+
 type IValidConstantExpression = string | number
 type IValidExpression<Props> =
 	| IValidConstantExpression
@@ -12,9 +14,6 @@ interface IDefaultProps {
 	as?: HTMLElementName
 	ref?: Ref<HTMLElementName>
 }
-
-const HypenCaseToCamelCase = (str: string) =>
-	str.replace(/-([a-z])/g, (_, up) => up.toUpperCase())
 
 const InterpolationFactory =
 	(element: HTMLElementName) =>

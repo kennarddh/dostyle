@@ -5,10 +5,5 @@
 		"rootDir": "./src/"
 	},
 	"include": ["src"],
-	"extends": "../../tsconfig.json",
-	"references": [
-		{
-			"path": "../utils/"
-		}
-	]
+	"extends": "../../tsconfig.json"
 }
