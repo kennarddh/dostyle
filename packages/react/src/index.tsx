@@ -15,7 +15,7 @@ interface IDefaultProps {
 	ref?: RefObject<HTMLElement>
 }
 
-type IUserProps = Record<string | number | symbol, unknown>
+type IUserProps = Record<string | number | symbol, NonNullable<unknown>>
 
 type IProps<
 	Element extends IHTMLElementName,
@@ -30,7 +30,7 @@ type IComponentProps<
 > = IProps<Element, UserProps>
 
 type IComponent<Element extends IHTMLElementName> = <
-	UserProps extends IUserProps = Record<string, never>
+	UserProps extends IUserProps = Record<string, NonNullable<unknown>>
 >(
 	strings: TemplateStringsArray,
 	...expressions: IValidExpression<Omit<IProps<Element, UserProps>, 'ref'>>[]
@@ -38,7 +38,7 @@ type IComponent<Element extends IHTMLElementName> = <
 
 const ComponentFactory =
 	<Element extends IHTMLElementName>(element: Element) =>
-	<UserProps extends IUserProps = Record<string, unknown>>(
+	<UserProps extends IUserProps = Record<string, NonNullable<unknown>>>(
 		strings: TemplateStringsArray,
 		...expressions: IValidExpression<
 			Omit<IProps<Element, UserProps>, 'ref'>
