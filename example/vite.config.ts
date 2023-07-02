@@ -38,6 +38,7 @@ export default defineConfig(({ mode }) => {
 
 	return {
 		plugins: [
+			DoStyle(),
 			react(),
 			svgr(),
 			mode === 'development'
@@ -48,7 +49,6 @@ export default defineConfig(({ mode }) => {
 						},
 				  }) // eslint-disable-line no-mixed-spaces-and-tabs
 				: null,
-			DoStyle(),
 		],
 		resolve: {
 			alias: resolveAlias,

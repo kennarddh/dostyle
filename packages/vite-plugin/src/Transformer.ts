@@ -1,21 +1,32 @@
 import babelCore, { PluginObj } from '@babel/core'
 import { RandomClassName } from '@dostyle/utils'
 
-import { IRules, ITransformedComponents } from '.'
+import { IRules } from '.'
+import { FilesTransformedComponents } from './GlobalData'
 
 type Babel = typeof babelCore
 
 const Transformer =
-	(transformedComponents: ITransformedComponents) =>
+	(id: string) =>
 	(babel: Babel): PluginObj => {
 		let programPath: babelCore.NodePath<babelCore.types.Program> | null
+
+		const removeOnProgramExit: babelCore.NodePath[] = []
+
 		return {
 			name: 'dostyle', // this is optional
 			visitor: {
-				Program(path) {
-					if (path.isProgram()) {
-						programPath = path
-					}
+				Program: {
+					enter(path) {
+						if (path.isProgram()) {
+							programPath = path
+						}
+					},
+					exit(path) {
+						if (path.isProgram()) {
+							removeOnProgramExit.forEach(path => path.remove())
+						}
+					},
 				},
 				ExportNamedDeclaration(path) {
 					if (
@@ -26,7 +37,7 @@ const Transformer =
 							.declarations) {
 							if (declaration.id.type !== 'Identifier') continue
 
-							transformedComponents.exports.push({
+							FilesTransformedComponents[id].exports.push({
 								exportName: declaration.id.name,
 								localName: declaration.id.name,
 							})
@@ -38,7 +49,7 @@ const Transformer =
 						path.isExportSpecifier() &&
 						path.node.exported.type === 'Identifier'
 					) {
-						transformedComponents.exports.push({
+						FilesTransformedComponents[id].exports.push({
 							exportName: path.node.exported.name,
 							localName: path.node.local.name,
 						})
@@ -49,7 +60,7 @@ const Transformer =
 						path.isExportDefaultDeclaration() &&
 						path.node.declaration.type === 'Identifier'
 					) {
-						transformedComponents.exports.push({
+						FilesTransformedComponents[id].exports.push({
 							default: true,
 							exportName: path.node.declaration.name,
 							localName: path.node.declaration.name,
@@ -101,13 +112,14 @@ const Transformer =
 
 						const rules: IRules = Object.fromEntries(rulesArray)
 
-						transformedComponents.locals.push({
+						FilesTransformedComponents[id].locals.push({
 							className,
 							name:
 								path.parent.type === 'VariableDeclarator' &&
 								path.parent.id.type === 'Identifier'
 									? path.parent.id.name
 									: null,
+							scope: path.scope,
 							element: {
 								name: elementName,
 								rules,
@@ -115,7 +127,44 @@ const Transformer =
 						})
 
 						if (path.parent.type === 'VariableDeclarator')
-							path.parentPath.remove()
+							removeOnProgramExit.push(path.parentPath)
+					}
+				},
+				JSXElement(path) {
+					if (
+						path.isJSXElement() &&
+						path.node.openingElement.name.type === 'JSXIdentifier'
+					) {
+						const componentName = path.node.openingElement.name.name
+
+						if (componentName[0].toLowerCase() === componentName[0])
+							return // Not custom react component
+
+						const targetComponentScope =
+							path.scope.getBinding(componentName)?.path.scope
+
+						if (!targetComponentScope) return
+
+						const localComponent = FilesTransformedComponents[
+							id
+						].locals.find(
+							component =>
+								component.name === componentName &&
+								component.scope === targetComponentScope
+						)
+
+						if (!localComponent) return
+
+						path.node.openingElement.name.name = localComponent
+							?.element.name as string
+
+						if (
+							path.node.closingElement &&
+							path.node.closingElement.name.type ===
+								'JSXIdentifier'
+						)
+							path.node.closingElement.name.name = localComponent
+								?.element.name as string
 					}
 				},
 			},

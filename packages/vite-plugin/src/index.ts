@@ -1,7 +1,9 @@
 import { Plugin } from 'vite'
 
 import babelCore, { BabelFileResult, transformSync } from '@babel/core'
+import { Scope } from '@babel/traverse'
 
+import { FilesTransformedComponents } from './GlobalData'
 import Transformer from './Transformer'
 
 export interface IDoStyleParameters {
@@ -16,6 +18,7 @@ export interface ITransformedComponents {
 	locals: {
 		className: string
 		name: string | null
+		scope: Scope
 		element: {
 			name: string
 			rules: IRules
@@ -30,22 +33,20 @@ export type IRules = Record<string, string>
 const DoStyle = ({
 	extensions = ['jsx', 'tsx'],
 }: IDoStyleParameters = {}): Plugin => {
-	const filesTransformedComponents: IFilesTransformedComponents = {}
-
 	return {
 		name: 'do-style',
 		enforce: 'pre',
 		transform(src, id) {
 			if (!extensions.some(ext => id.endsWith(ext))) return
 
-			if (!filesTransformedComponents[id])
-				filesTransformedComponents[id] = { exports: [], locals: [] }
+			if (!FilesTransformedComponents[id])
+				FilesTransformedComponents[id] = { exports: [], locals: [] }
 
 			const result = transformSync(src, {
 				configFile: false,
 				filename: id,
 				presets: ['@babel/preset-typescript'],
-				plugins: [Transformer(filesTransformedComponents[id])],
+				plugins: [Transformer(id)],
 			}) as BabelFileResult // => { code, map, ast }
 
 			return {
