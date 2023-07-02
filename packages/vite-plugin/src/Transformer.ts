@@ -31,6 +31,7 @@ const Transformer =
 							transformedComponents.push({
 								className: RandomClassName(),
 								exportName: declaration.id.name,
+								localName: declaration.id.name,
 							})
 						}
 					}
@@ -43,6 +44,7 @@ const Transformer =
 						transformedComponents.push({
 							className: RandomClassName(),
 							exportName: path.node.exported.name,
+							localName: path.node.local.name,
 						})
 					}
 				},

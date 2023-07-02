@@ -9,8 +9,8 @@ export interface IDoStyleParameters {
 }
 
 export type ITransformedComponents = ({ className: string } & (
-	| { default: true; exportName?: never }
-	| { default?: never; exportName: string }
+	| { default: true; exportName?: never; localName?: never }
+	| { default?: never; exportName: string; localName: string }
 ))[]
 
 export type ITransformedExportedComponents = Record<
