@@ -30,8 +30,5 @@
 	},
 	"peerDependencies": {
 		"vite": "^4.0.0"
-	},
-	"dependencies": {
-		"unplugin-ast": "^0.8.0"
 	}
 }
