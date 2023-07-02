@@ -3,7 +3,8 @@
 		"composite": true,
 		"outDir": "./dist/",
 		"rootDir": "./src/",
-		"module": "CommonJS"
+		"module": "CommonJS",
+		"lib": ["DOM", "DOM.Iterable", "ESNext"]
 	},
 	"include": ["src"],
 	"extends": "../../tsconfig.json"
