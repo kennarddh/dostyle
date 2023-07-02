@@ -1,22 +1,20 @@
 import babelCore, { PluginObj } from '@babel/core'
 import { RandomClassName } from '@dostyle/utils'
 
-import { ITransformedComponents } from '.'
+import { IRules, ITransformedComponents } from '.'
 
 type Babel = typeof babelCore
 
 const Transformer =
 	(transformedComponents: ITransformedComponents) =>
 	(babel: Babel): PluginObj => {
-		let program: babelCore.types.Program
-		let importedCreateElementName: string | null = null
-
+		let programPath: babelCore.NodePath<babelCore.types.Program> | null
 		return {
 			name: 'dostyle', // this is optional
 			visitor: {
 				Program(path) {
 					if (path.isProgram()) {
-						program = path.node
+						programPath = path
 					}
 				},
 				ExportNamedDeclaration(path) {
@@ -28,8 +26,7 @@ const Transformer =
 							.declarations) {
 							if (declaration.id.type !== 'Identifier') continue
 
-							transformedComponents.push({
-								className: RandomClassName(),
+							transformedComponents.exports.push({
 								exportName: declaration.id.name,
 								localName: declaration.id.name,
 							})
@@ -41,8 +38,7 @@ const Transformer =
 						path.isExportSpecifier() &&
 						path.node.exported.type === 'Identifier'
 					) {
-						transformedComponents.push({
-							className: RandomClassName(),
+						transformedComponents.exports.push({
 							exportName: path.node.exported.name,
 							localName: path.node.local.name,
 						})
@@ -53,22 +49,11 @@ const Transformer =
 						path.isExportDefaultDeclaration() &&
 						path.node.declaration.type === 'Identifier'
 					) {
-						transformedComponents.push({
-							className: RandomClassName(),
+						transformedComponents.exports.push({
 							default: true,
+							exportName: path.node.declaration.name,
+							localName: path.node.declaration.name,
 						})
-					}
-				},
-				ImportSpecifier(path) {
-					if (
-						path.isImportSpecifier() &&
-						path.node.imported.type === 'Identifier' &&
-						path.node.imported.name === 'createElement' &&
-						path.parent.type === 'ImportDeclaration' &&
-						path.parent.source.type === 'StringLiteral' &&
-						path.parent.source.value === 'react'
-					) {
-						importedCreateElementName = path.node.local.name
 					}
 				},
 				TaggedTemplateExpression(path) {
@@ -95,29 +80,42 @@ const Transformer =
 
 						const elementName = path.node.tag.property.name
 
-						if (!importedCreateElementName) {
-							const importName = babel.types.importDeclaration(
-								[
-									babel.types.importSpecifier(
-										babel.types.identifier(
-											'_createElement'
-										),
-										babel.types.identifier('createElement')
-									),
-								],
-								babel.types.stringLiteral('react')
+						const className = RandomClassName()
+
+						const strings = path.node.quasi.quasis.map(
+							quasi => quasi.value.cooked
+						)
+						// const interpolations =  path.node.quasi.expressions.map(quasi=>quasi.value.cooked)
+
+						const cssString = strings.join('')
+						const rulesArray = cssString
+							.trim()
+							.split(';')
+							.filter(rule => rule !== '')
+							.map(rule =>
+								rule
+									.trim()
+									.split(':')
+									.map(part => part.trim())
 							)
 
-							importedCreateElementName = '_createElement'
+						const rules: IRules = Object.fromEntries(rulesArray)
 
-							program.body.unshift(importName)
-						}
-
-						const element = babel.template.expression
-							.ast`() => ${importedCreateElementName}('${elementName}')`
+						transformedComponents.locals.push({
+							className,
+							name:
+								path.parent.type === 'VariableDeclarator' &&
+								path.parent.id.type === 'Identifier'
+									? path.parent.id.name
+									: null,
+							element: {
+								name: elementName,
+								rules,
+							},
+						})
 
 						if (path.parent.type === 'VariableDeclarator')
-							path.parent.init = element
+							path.parentPath.remove()
 					}
 				},
 			},

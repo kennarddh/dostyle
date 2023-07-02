@@ -1,6 +1,6 @@
 import { Plugin } from 'vite'
 
-import { BabelFileResult, transformSync } from '@babel/core'
+import babelCore, { BabelFileResult, transformSync } from '@babel/core'
 
 import Transformer from './Transformer'
 
@@ -8,20 +8,29 @@ export interface IDoStyleParameters {
 	extensions?: string[]
 }
 
-export type ITransformedComponents = ({ className: string } & (
-	| { default: true; exportName?: never; localName?: never }
-	| { default?: never; exportName: string; localName: string }
-))[]
+export interface ITransformedComponents {
+	exports: ({
+		exportName: string
+		localName: string
+	} & ({ default: true } | { default?: never }))[]
+	locals: {
+		className: string
+		name: string | null
+		element: {
+			name: string
+			rules: IRules
+		}
+	}[]
+}
 
-export type ITransformedExportedComponents = Record<
-	string,
-	ITransformedComponents
->
+export type IFilesTransformedComponents = Record<string, ITransformedComponents>
+
+export type IRules = Record<string, string>
 
 const DoStyle = ({
 	extensions = ['jsx', 'tsx'],
 }: IDoStyleParameters = {}): Plugin => {
-	const transformedExportedComponents: ITransformedExportedComponents = {}
+	const filesTransformedComponents: IFilesTransformedComponents = {}
 
 	return {
 		name: 'do-style',
@@ -29,14 +38,14 @@ const DoStyle = ({
 		transform(src, id) {
 			if (!extensions.some(ext => id.endsWith(ext))) return
 
-			if (!transformedExportedComponents[id])
-				transformedExportedComponents[id] = []
+			if (!filesTransformedComponents[id])
+				filesTransformedComponents[id] = { exports: [], locals: [] }
 
 			const result = transformSync(src, {
 				configFile: false,
 				filename: id,
 				presets: ['@babel/preset-typescript'],
-				plugins: [Transformer(transformedExportedComponents[id])],
+				plugins: [Transformer(filesTransformedComponents[id])],
 			}) as BabelFileResult // => { code, map, ast }
 
 			return {
