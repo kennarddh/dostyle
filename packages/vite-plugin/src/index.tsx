@@ -8,7 +8,7 @@ export interface IDoStyleParameters {
 	extensions?: string[]
 }
 
-type ITransformedExportedComponents = Record<
+export type ITransformedExportedComponents = Record<
 	string,
 	{ className: string } & (
 		| { default: true; exportName?: never }
