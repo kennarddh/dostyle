@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react'
 import { checker } from 'vite-plugin-checker'
 import svgr from 'vite-plugin-svgr'
 
+import DoStyle from '@dostyle/vite-plugin'
 import { resolve } from 'path'
 
 export const relativeAlias: Record<string, string> = {
@@ -47,6 +48,7 @@ export default defineConfig(({ mode }) => {
 						},
 				  }) // eslint-disable-line no-mixed-spaces-and-tabs
 				: null,
+			DoStyle(),
 		],
 		resolve: {
 			alias: resolveAlias,
