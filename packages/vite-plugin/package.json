@@ -1,0 +1,30 @@
+{
+	"name": "@dostyle/vite-plugin",
+	"version": "1.0.0",
+	"description": "DoStyle Vite Plugin",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/kennarddh/dostyle.git"
+	},
+	"keywords": [
+		"dostyle",
+		"vite-plugin"
+	],
+	"author": "kennarddh",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/kennarddh/dostyle.git"
+	},
+	"homepage": "https://github.com/kennarddh/dostyle.git#readme",
+	"scripts": {
+		"build": "tsc -b"
+	},
+	"files": [
+		"./dist/"
+	],
+	"publishConfig": {
+		"access": "public"
+	}
+}
