@@ -1,6 +1,8 @@
 import babelCore, { PluginObj } from '@babel/core'
 
-const Transformer = (babel: typeof babelCore): PluginObj => {
+type Babel = typeof babelCore
+
+const Transformer = (babel: Babel): PluginObj => {
 	return {
 		name: 'dostyle', // this is optional
 		visitor: {
@@ -10,10 +12,9 @@ const Transformer = (babel: typeof babelCore): PluginObj => {
 					path.node.tag.type === 'MemberExpression' &&
 					path.node.tag.object.type === 'Identifier' &&
 					path.node.tag.property.type === 'Identifier' &&
-					path.node.tag.object.name === 'styled' &&
-					path.node.tag.property.name === 'p'
+					path.node.tag.object.name === 'styled'
 				) {
-					path.node.tag.property.name = 'h1'
+					const element = path.node.tag.property.name
 				}
 			},
 		},
