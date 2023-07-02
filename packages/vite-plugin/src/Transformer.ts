@@ -9,7 +9,7 @@ type Babel = typeof babelCore
 const Transformer =
 	(id: string) =>
 	(babel: Babel): PluginObj => {
-		let programPath: babelCore.NodePath<babelCore.types.Program> | null
+		// let programPath: babelCore.NodePath<babelCore.types.Program> | null
 
 		const removeOnProgramExit: babelCore.NodePath[] = []
 
@@ -17,11 +17,11 @@ const Transformer =
 			name: 'dostyle', // this is optional
 			visitor: {
 				Program: {
-					enter(path) {
-						if (path.isProgram()) {
-							programPath = path
-						}
-					},
+					// enter(path) {
+					// 	if (path.isProgram()) {
+					// 		programPath = path
+					// 	}
+					// },
 					exit(path) {
 						if (path.isProgram()) {
 							removeOnProgramExit.forEach(path => path.remove())
