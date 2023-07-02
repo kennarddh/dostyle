@@ -1,5 +1,5 @@
 import babelCore, { PluginObj } from '@babel/core'
-import { RandomClassName } from '@dostyle/utils'
+import { HypenCaseToCamelCase, RandomClassName } from '@dostyle/utils'
 
 import { IRules } from '.'
 import { FilesTransformedComponents } from './GlobalData'
@@ -157,6 +157,30 @@ const Transformer =
 
 						path.node.openingElement.name.name = localComponent
 							?.element.name as string
+
+						path.node.openingElement.attributes.push(
+							babel.types.jsxAttribute(
+								babel.types.jsxIdentifier('style'),
+								babel.types.jsxExpressionContainer(
+									babel.types.objectExpression(
+										Object.entries(
+											localComponent.element.rules
+										).map(rule =>
+											babel.types.objectProperty(
+												babel.types.identifier(
+													`'${HypenCaseToCamelCase(
+														rule[0]
+													)}'`
+												),
+												babel.types.stringLiteral(
+													rule[1]
+												)
+											)
+										)
+									)
+								)
+							)
+						)
 
 						if (
 							path.node.closingElement &&
