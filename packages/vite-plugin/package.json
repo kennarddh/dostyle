@@ -19,7 +19,8 @@
 	},
 	"homepage": "https://github.com/kennarddh/dostyle.git#readme",
 	"scripts": {
-		"build": "rimraf ./dist && tsc -b"
+		"build": " tsc -b",
+		"clean": "rimraf ./dist"
 	},
 	"files": [
 		"./dist/"

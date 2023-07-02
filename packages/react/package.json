@@ -30,7 +30,8 @@
 		"@dostyle/utils": "^1.0.1"
 	},
 	"scripts": {
-		"build": "rimraf ./dist && tsc -b"
+		"build": " tsc -b",
+		"clean": "rimraf ./dist"
 	},
 	"files": [
 		"./dist/"
