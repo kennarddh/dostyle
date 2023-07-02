@@ -15,7 +15,8 @@
 		"isolatedModules": true,
 		"removeComments": true,
 		"sourceMap": true,
-		"noImplicitAny": true
+		"noImplicitAny": true,
+		"declaration": true
 	},
 	"references": [
 		{
