@@ -1,7 +1,8 @@
 import { Plugin } from 'vite'
 
-import { transformSync } from '@babel/core'
-import path from 'path'
+import { BabelFileResult, transformSync } from '@babel/core'
+
+import Transformer from './Transformer'
 
 export interface IDoStyleParameters {
 	extensions?: string[]
@@ -16,15 +17,17 @@ const DoStyle = ({
 		transform(src, id) {
 			if (!extensions.some(ext => id.endsWith(ext))) return
 
-			console.log(path)
-
 			const result = transformSync(src, {
 				configFile: false,
 				filename: id,
 				presets: ['@babel/preset-typescript'],
-				plugins: [''],
-			}) // => { code, map, ast }
-			console.log(result?.code)
+				plugins: [Transformer],
+			}) as BabelFileResult // => { code, map, ast }
+
+			return {
+				code: result.code as string,
+				map: result.map,
+			}
 		},
 	}
 }
