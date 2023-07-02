@@ -1,4 +1,11 @@
-import { FC, JSX, RefObject, createElement, forwardRef } from 'react'
+import {
+	ForwardRefExoticComponent,
+	JSX,
+	PropsWithoutRef,
+	RefAttributes,
+	createElement,
+	forwardRef,
+} from 'react'
 
 import { HypenCaseToCamelCase } from '@dostyle/utils'
 
@@ -9,10 +16,9 @@ type IValidExpression<Props> =
 
 type IHTMLElementName = keyof JSX.IntrinsicElements
 
-type IInvalidProps = 'as' | 'ref'
-interface IDefaultProps<Element extends IHTMLElementName> {
+type IInvalidProps = 'as'
+interface IDefaultProps {
 	as?: IHTMLElementName
-	ref?: RefObject<GetHtmlElementFromName<Element>>
 }
 
 type IUserProps = Record<string | number | symbol, NonNullable<unknown>>
@@ -21,7 +27,7 @@ type IProps<
 	Element extends IHTMLElementName,
 	UserProps extends IUserProps
 > = Omit<UserProps, IInvalidProps> &
-	IDefaultProps<Element> &
+	IDefaultProps &
 	JSX.IntrinsicElements[Element]
 
 type IComponentProps<
@@ -34,7 +40,10 @@ type IComponent<Element extends IHTMLElementName> = <
 >(
 	strings: TemplateStringsArray,
 	...expressions: IValidExpression<Omit<IProps<Element, UserProps>, 'ref'>>[]
-) => FC<IComponentProps<Element, UserProps>>
+) => ForwardRefExoticComponent<
+	PropsWithoutRef<IComponentProps<Element, UserProps>> &
+		RefAttributes<GetHtmlElementFromName<Element>>
+>
 
 type GetHtmlElementFromName<Element extends IHTMLElementName> = NonNullable<
 	Exclude<
