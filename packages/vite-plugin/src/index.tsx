@@ -8,9 +8,19 @@ export interface IDoStyleParameters {
 	extensions?: string[]
 }
 
+type ITransformedExportedComponents = Record<
+	string,
+	{ className: string } & (
+		| { default: true; exportName?: never }
+		| { default?: never; exportName: string }
+	)
+>
+
 const DoStyle = ({
 	extensions = ['jsx', 'tsx'],
 }: IDoStyleParameters = {}): Plugin => {
+	const transformedExportedComponents: ITransformedExportedComponents = {}
+
 	return {
 		name: 'do-style',
 		enforce: 'pre',
