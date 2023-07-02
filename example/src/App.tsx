@@ -23,7 +23,7 @@ const App: FC = () => {
 			as='section'
 			width={200}
 			onClick={() => console.log('Container clicked')}
-			ref={ContainerRef}
+			// ref={ContainerRef}
 		>
 			<Text color='red'>1</Text>
 			<Text color='yellow'>2</Text>
