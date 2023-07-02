@@ -34,6 +34,20 @@ const Transformer = (babel: Babel): PluginObj => {
 					path.node.tag.property.type === 'Identifier' &&
 					path.node.tag.object.name === 'styled'
 				) {
+					const styledBinding = path.scope.getBinding('styled')
+
+					if (
+						!(
+							styledBinding?.path.parent.type ===
+								'ImportDeclaration' &&
+							styledBinding.path.parent.source.type ===
+								'StringLiteral' &&
+							styledBinding.path.parent.source.value ===
+								'@dostyle/react'
+						)
+					)
+						return // Make sure styled is imported from @dostyle/react
+
 					const elementName = path.node.tag.property.name
 
 					if (!importedCreateElementName) {
@@ -55,9 +69,8 @@ const Transformer = (babel: Babel): PluginObj => {
 					const element = babel.template.expression
 						.ast`() => ${importedCreateElementName}('${elementName}')`
 
-					if (path.parent.type === 'VariableDeclarator') {
+					if (path.parent.type === 'VariableDeclarator')
 						path.parent.init = element
-					}
 				}
 			},
 		},
