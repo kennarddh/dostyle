@@ -39,7 +39,7 @@ type IComponent<Element extends IHTMLElementName> = <
 	UserProps extends IUserProps = Record<string, NonNullable<unknown>>
 >(
 	strings: TemplateStringsArray,
-	...expressions: IValidExpression<Omit<IProps<Element, UserProps>, 'ref'>>[]
+	...expressions: IValidExpression<IProps<Element, UserProps>>[]
 ) => ForwardRefExoticComponent<
 	PropsWithoutRef<IComponentProps<Element, UserProps>> &
 		RefAttributes<GetHtmlElementFromName<Element>>
@@ -56,12 +56,10 @@ type GetHtmlElementFromName<Element extends IHTMLElementName> = NonNullable<
 
 // as props is not used as element type
 const ComponentFactory =
-	<Element extends IHTMLElementName>(element: Element) =>
+	<Element extends IHTMLElementName>(element: Element): IComponent<Element> =>
 	<UserProps extends IUserProps = Record<string, NonNullable<unknown>>>(
 		strings: TemplateStringsArray,
-		...expressions: IValidExpression<
-			Omit<IProps<Element, UserProps>, 'ref'>
-		>[]
+		...expressions: IValidExpression<IProps<Element, UserProps>>[]
 	) => {
 		const Component = forwardRef<
 			GetHtmlElementFromName<Element>,
@@ -72,9 +70,7 @@ const ComponentFactory =
 			for (const expression of expressions) {
 				if (typeof expression === 'function')
 					parsedExpressions.push(
-						expression(
-							props as Omit<IProps<Element, UserProps>, 'ref'>
-						)
+						expression(props as IProps<Element, UserProps>)
 					)
 				else parsedExpressions.push(expression)
 			}
