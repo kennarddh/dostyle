@@ -19,7 +19,7 @@
 	},
 	"homepage": "https://github.com/kennarddh/dostyle.git#readme",
 	"scripts": {
-		"build": "tsc -b --clean"
+		"build": "rimraf ./dist && tsc -b"
 	},
 	"files": [
 		"./dist/"

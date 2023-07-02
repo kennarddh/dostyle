@@ -23,6 +23,9 @@
 		},
 		{
 			"path": "./packages/utils/"
+		},
+		{
+			"path": "./packages/vite-plugin/"
 		}
 	],
 	"exclude": ["example"],
