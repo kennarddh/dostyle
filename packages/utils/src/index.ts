@@ -1,9 +1,3 @@
-export const HypenCaseToCamelCase = (str: string) =>
-	str
-		.split('-')
-		.map(part => `${part[0].toUpperCase()}${part.slice(0)}`)
-		.join('')
-
 export const DecimalToHex = (decimal: number) =>
 	decimal.toString(16).padStart(2, '0')
 

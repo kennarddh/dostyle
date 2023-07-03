@@ -7,8 +7,6 @@ import {
 	forwardRef,
 } from 'react'
 
-import { HypenCaseToCamelCase } from '@dostyle/utils'
-
 type IValidConstantExpression = string | number
 type IValidExpression<Props> =
 	| IValidConstantExpression
@@ -53,6 +51,12 @@ type GetHtmlElementFromName<Element extends IHTMLElementName> = NonNullable<
 		(...args: any[]) => any // eslint-disable-line @typescript-eslint/no-explicit-any
 	>['current']
 >
+
+export const HypenCaseToCamelCase = (str: string) =>
+	str
+		.split('-')
+		.map(part => `${part[0].toUpperCase()}${part.slice(0)}`)
+		.join('')
 
 // as props is not used as element type
 const ComponentFactory =

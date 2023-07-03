@@ -1,10 +1,11 @@
 import { FC, useRef } from 'react'
 
+import styled from '@dostyle/react'
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 // eslint-disable-next-line import/no-unresolved
-import { ComponentSubTitle } from '@Components/Component'
-import styled from '@dostyle/react'
+import { ComponentSubTitle } from 'Components/Component'
 
 import OutsideParagraph, { OutsideTitle } from './AppStyles'
 

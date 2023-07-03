@@ -9,7 +9,7 @@ import DoStyle from '@dostyle/vite-plugin'
 import { resolve } from 'path'
 
 export const relativeAlias: Record<string, string> = {
-	'@Components': './src/Components',
+	Components: './src/Components',
 	Contexts: './src/Contexts',
 	Utils: './src/Utils',
 	Hooks: './src/Hooks',
