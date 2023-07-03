@@ -1,6 +1,12 @@
 import { FC, useRef } from 'react'
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+// eslint-disable-next-line import/no-unresolved
+import { ComponentSubTitle } from '@Components/Component'
 import styled from '@dostyle/react'
+
+import OutsideParagraph, { OutsideTitle } from './AppStyles'
 
 const Container = styled.div<{ width: number }>`
 	background-color: blue;
@@ -26,6 +32,9 @@ const App: FC = () => {
 			className='original-class'
 			// ref={ContainerRef}
 		>
+			<OutsideTitle>Outside Title</OutsideTitle>
+			<ComponentSubTitle>Component Sub Title</ComponentSubTitle>
+			<OutsideParagraph>Outside Paragraph</OutsideParagraph>
 			<Text color='red'>1</Text>
 			<Text color='yellow'>2</Text>
 			<Input placeholder='Input' />
