@@ -1,6 +1,7 @@
+/* eslint-disable security/detect-object-injection */
 import { Plugin } from 'vite'
 
-import babelCore, { BabelFileResult, transformSync } from '@babel/core'
+import { BabelFileResult, transformSync } from '@babel/core'
 import { Scope } from '@babel/traverse'
 
 import { FilesTransformedComponents } from './GlobalData'
