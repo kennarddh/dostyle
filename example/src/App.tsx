@@ -23,6 +23,7 @@ const App: FC = () => {
 			as='section'
 			width={200}
 			onClick={() => console.log('Container clicked')}
+			className='original-class'
 			// ref={ContainerRef}
 		>
 			<Text color='red'>1</Text>

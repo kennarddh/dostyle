@@ -1,3 +1,4 @@
+/* eslint-disable security/detect-object-injection */
 import babelCore, { PluginObj } from '@babel/core'
 import { HypenCaseToCamelCase, RandomClassName } from '@dostyle/utils'
 
@@ -181,6 +182,36 @@ const Transformer =
 								)
 							)
 						)
+
+						const classNameAttributeIfExist =
+							path.node.openingElement.attributes.find(
+								attribute =>
+									attribute.type === 'JSXAttribute' &&
+									attribute.name.type === 'JSXIdentifier' &&
+									attribute.name.name === 'className'
+							)
+
+						if (!classNameAttributeIfExist) {
+							path.node.openingElement.attributes.push(
+								babel.types.jsxAttribute(
+									babel.types.jsxIdentifier('className'),
+									babel.types.stringLiteral(
+										`${localComponent.className}`
+									)
+								)
+							)
+						} else if (
+							classNameAttributeIfExist.type === 'JSXAttribute' &&
+							classNameAttributeIfExist?.value?.type ===
+								'StringLiteral'
+						) {
+							classNameAttributeIfExist.value =
+								babel.types.jsxExpressionContainer(
+									babel.types.stringLiteral(
+										`${classNameAttributeIfExist.value.value} ${localComponent.className}`
+									)
+								)
+						}
 
 						if (
 							path.node.closingElement &&
