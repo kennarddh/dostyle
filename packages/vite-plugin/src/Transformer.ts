@@ -114,7 +114,7 @@ const Transformer =
 						const rules: IRules = Object.fromEntries(rulesArray)
 
 						FilesTransformedComponents[id].locals.push({
-							className,
+							classNames: [className],
 							name:
 								path.parent.type === 'VariableDeclarator' &&
 								path.parent.id.type === 'Identifier'
@@ -196,7 +196,7 @@ const Transformer =
 								babel.types.jsxAttribute(
 									babel.types.jsxIdentifier('className'),
 									babel.types.stringLiteral(
-										`${localComponent.className}`
+										`${localComponent.classNames.join(' ')}`
 									)
 								)
 							)
@@ -208,7 +208,12 @@ const Transformer =
 							classNameAttributeIfExist.value =
 								babel.types.jsxExpressionContainer(
 									babel.types.stringLiteral(
-										`${classNameAttributeIfExist.value.value} ${localComponent.className}`
+										`${
+											classNameAttributeIfExist.value
+												.value
+										} ${localComponent.classNames.join(
+											' '
+										)}`
 									)
 								)
 						}

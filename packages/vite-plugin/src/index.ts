@@ -16,7 +16,7 @@ export interface ITransformedComponents {
 		localName: string
 	} & ({ default: true } | { default?: never }))[]
 	locals: {
-		className: string
+		classNames: string[]
 		name: string | null
 		scope: Scope
 		element: {
