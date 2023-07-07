@@ -1,3 +1,3 @@
 import { IFilesTransformedComponents } from '.'
 
-export const FilesTransformedComponents: IFilesTransformedComponents = {}
+export const FilesTransformedComponents: IFilesTransformedComponents = new Map()

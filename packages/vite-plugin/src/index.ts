@@ -1,54 +1,80 @@
 /* eslint-disable security/detect-object-injection */
-import { Plugin } from 'vite'
+import { Plugin, ResolvedConfig } from 'vite'
 
-import { BabelFileResult, transformSync } from '@babel/core'
+import babelCore, { BabelFileResult, transformSync } from '@babel/core'
 import { Scope } from '@babel/traverse'
 
 import { FilesTransformedComponents } from './GlobalData'
+import PreTransformer from './PreTransformer'
 import Transformer from './Transformer'
 
-export interface IDoStyleParameters {
+export interface IDoStyleOptions {
 	extensions?: string[]
+	moduleRoot?: string | string[]
 }
 
+export type IExportTransformedComponent = {
+	exportName: string
+	localName: string
+} & ({ default: true } | { default?: never })
+
+export interface ILocalTransformedComponent {
+	classNames: string[]
+	name: string | null
+	scope: Scope
+	element: {
+		name: string
+		rules: IRules
+	}
+}
 export interface ITransformedComponents {
-	exports: ({
-		exportName: string
-		localName: string
-	} & ({ default: true } | { default?: never }))[]
+	exports: IExportTransformedComponent[]
 	locals: {
-		classNames: string[]
-		name: string | null
-		scope: Scope
-		element: {
-			name: string
-			rules: IRules
-		}
-	}[]
+		components: ILocalTransformedComponent[]
+		removeOnProgramExit: Set<babelCore.NodePath>
+	}
 }
 
-export type IFilesTransformedComponents = Record<string, ITransformedComponents>
+export type IFilesTransformedComponents = Map<string, ITransformedComponents>
 
 export type IRules = Record<string, string>
 
 const DoStyle = ({
 	extensions = ['jsx', 'tsx'],
-}: IDoStyleParameters = {}): Plugin => {
+}: IDoStyleOptions = {}): Plugin => {
+	let config: ResolvedConfig | null = null
+
 	return {
 		name: 'do-style',
 		enforce: 'pre',
+		configResolved(configResolved) {
+			config = configResolved
+		},
 		transform(src, id) {
 			if (!extensions.some(ext => id.endsWith(ext))) return
 
-			if (!FilesTransformedComponents[id])
-				FilesTransformedComponents[id] = { exports: [], locals: [] }
+			if (!FilesTransformedComponents.has(id))
+				FilesTransformedComponents.set(id, {
+					exports: [],
+					locals: {
+						components: [],
+						removeOnProgramExit: new Set(),
+					},
+				})
+
+			console.log({ id })
 
 			const result = transformSync(src, {
 				configFile: false,
 				filename: id,
 				presets: ['@babel/preset-typescript'],
-				plugins: [Transformer(id)],
+				plugins: [
+					PreTransformer(id),
+					Transformer(id, config?.resolve?.alias ?? []),
+				],
 			}) as BabelFileResult // => { code, map, ast }
+
+			// console.log(id, '\n', src, '\n\n', result.code, '\n\n\n')
 
 			return {
 				code: result.code as string,

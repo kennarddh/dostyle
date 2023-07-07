@@ -2,12 +2,11 @@ import { FC, useRef } from 'react'
 
 import styled from '@dostyle/react'
 
+import OutsideParagraph, { OutsideTitle } from './AppStyles'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-// eslint-disable-next-line import/no-unresolved
-import { ComponentSubTitle } from 'Components/Component'
-
-import OutsideParagraph, { OutsideTitle } from './AppStyles'
+// eslint-disable-next-line import/no-unresolved, import/extensions
+import { ComponentSubTitle } from './index.tsx'
 
 const Container = styled.div<{ width: number }>`
 	background-color: blue;
