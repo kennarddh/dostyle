@@ -4,7 +4,7 @@ import { Alias, normalizePath } from 'vite'
 import babelCore, { PluginObj } from '@babel/core'
 import { dirname, isAbsolute, join } from 'node:path'
 
-import { IExportTransformedComponent, ILocalTransformedComponent } from '.'
+import { ILocalTransformedComponent } from '.'
 import { FilesTransformedComponents } from './GlobalData'
 
 type Babel = typeof babelCore
