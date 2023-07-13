@@ -1,5 +1,5 @@
 /* eslint-disable security/detect-object-injection */
-import { Plugin, ResolvedConfig } from 'vite'
+import { Plugin } from 'vite'
 
 import babelCore, { BabelFileResult, transformSync } from '@babel/core'
 import { Scope } from '@babel/traverse'
@@ -42,7 +42,7 @@ export type IRules = Record<string, string>
 const DoStyle = ({
 	extensions = ['jsx', 'tsx'],
 }: IDoStyleOptions = {}): Plugin => {
-	let config: ResolvedConfig | null = null
+	// let config: ResolvedConfig | null = null
 
 	const virtualModuleId = 'virtual:do-style-react'
 	const resolvedVirtualModuleId = '\0' + virtualModuleId
@@ -50,9 +50,9 @@ const DoStyle = ({
 	return {
 		name: 'do-style',
 		enforce: 'pre',
-		configResolved(configResolved) {
-			config = configResolved
-		},
+		// configResolved(configResolved) {
+		// 	config = configResolved
+		// },
 		resolveId(id) {
 			if (id === virtualModuleId) {
 				return resolvedVirtualModuleId
@@ -65,17 +65,17 @@ const DoStyle = ({
 						createElement,
 					} from 'react'
 				
-				    const ComponentFactory = element => () => () => {
+				    const styled = (element, { className }) => ({ children }) => {
+						const parsedChildren = Array.isArray(children)
+							? children
+							: [children]
+
 						return createElement(
-							element
+							element,
+							{ className: className.join(' ') },
+							...parsedChildren
 						)
 					}
-
-					const styled = new Proxy({}, {
-						get(_, prop) {
-							return ComponentFactory(prop);
-						},
-					});
 
 					export default styled
 				`
@@ -100,8 +100,8 @@ const DoStyle = ({
 				filename: id,
 				presets: ['@babel/preset-typescript'],
 				plugins: [
-					PreTransformer(),
-					// Transformer(id, config?.resolve?.alias ?? []),
+					PreTransformer(virtualModuleId),
+					Transformer(id, virtualModuleId),
 				],
 			}) as BabelFileResult // => { code, map, ast }
 
