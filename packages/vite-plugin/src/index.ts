@@ -44,14 +44,47 @@ const DoStyle = ({
 }: IDoStyleOptions = {}): Plugin => {
 	let config: ResolvedConfig | null = null
 
+	const virtualModuleId = 'virtual:do-style-react'
+	const resolvedVirtualModuleId = '\0' + virtualModuleId
+
 	return {
 		name: 'do-style',
 		enforce: 'pre',
 		configResolved(configResolved) {
 			config = configResolved
 		},
+		resolveId(id) {
+			if (id === virtualModuleId) {
+				return resolvedVirtualModuleId
+			}
+		},
+		load(id) {
+			if (id === resolvedVirtualModuleId) {
+				return `
+					import {
+						createElement,
+					} from 'react'
+				
+				    const ComponentFactory = element => () => () => {
+						return createElement(
+							element
+						)
+					}
+
+					const styled = new Proxy({}, {
+						get(_, prop) {
+							return ComponentFactory(prop);
+						},
+					});
+
+					export default styled
+				`
+			}
+		},
 		transform(src, id) {
 			if (!extensions.some(ext => id.endsWith(ext))) return
+
+			console.log('transform', id)
 
 			if (!FilesTransformedComponents.has(id))
 				FilesTransformedComponents.set(id, {
@@ -62,15 +95,13 @@ const DoStyle = ({
 					},
 				})
 
-			console.log({ id })
-
 			const result = transformSync(src, {
 				configFile: false,
 				filename: id,
 				presets: ['@babel/preset-typescript'],
 				plugins: [
-					PreTransformer(id),
-					Transformer(id, config?.resolve?.alias ?? []),
+					PreTransformer(),
+					// Transformer(id, config?.resolve?.alias ?? []),
 				],
 			}) as BabelFileResult // => { code, map, ast }
 

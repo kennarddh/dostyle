@@ -38,6 +38,7 @@ const App: FC = () => {
 			<Text color='red'>1</Text>
 			<Text color='yellow'>2</Text>
 			<Input placeholder='Input' />
+			<p>Normal p</p>
 		</Container>
 	)
 }
