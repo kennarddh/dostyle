@@ -27,7 +27,6 @@ const App: FC = () => {
 	return (
 		<Container
 			as='section'
-			width={200}
 			onClick={() => console.log('Container clicked')}
 			className='original-class'
 			// ref={ContainerRef}
@@ -35,8 +34,8 @@ const App: FC = () => {
 			<OutsideTitle>Outside Title</OutsideTitle>
 			<ComponentSubTitle>Component Sub Title</ComponentSubTitle>
 			<OutsideParagraph>Outside Paragraph</OutsideParagraph>
-			<Text color='red'>1</Text>
-			<Text color='yellow'>2</Text>
+			<Text>1</Text>
+			<Text>2</Text>
 			<Input placeholder='Input' />
 			<p>Normal p</p>
 		</Container>

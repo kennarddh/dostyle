@@ -75,16 +75,19 @@ const DoStyle = ({
 			} else if (FilesSelectors[id]) {
 				console.log('load css', id, FilesSelectors)
 
-				return FilesSelectors[id].reduce(
-					(acc, selector) =>
-						`${acc}${selector.selectors.join(
-							','
-						)} {${selector.rulesEntries.reduce(
-							(acc, [prop, value]) => `${acc}${prop}:${value};`,
-							''
-						)}}`,
-					''
-				)
+				return FilesSelectors[id]
+					.filter(selector => selector.rulesEntries.length !== 0)
+					.reduce(
+						(acc, selector) =>
+							`${acc}${selector.selectors.join(
+								','
+							)} {${selector.rulesEntries.reduce(
+								(acc, [prop, value]) =>
+									`${acc}${prop}:${value};`,
+								''
+							)}}`,
+						''
+					)
 			}
 		},
 		handleHotUpdate(ctx) {
