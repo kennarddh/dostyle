@@ -1,3 +1,3 @@
-import { IFilesTransformedComponents } from '.'
+import { IFilesSelectors } from '.'
 
-export const FilesTransformedComponents: IFilesTransformedComponents = new Map()
+export const FilesSelectors: IFilesSelectors = {}

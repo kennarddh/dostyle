@@ -2,39 +2,18 @@
 import babelCore, { PluginObj } from '@babel/core'
 import { RandomClassName } from '@dostyle/utils'
 
-import { FilesTransformedComponents } from './GlobalData'
+import { FilesSelectors } from './GlobalData'
 
 type Babel = typeof babelCore
 
 const Transformer =
-	(id: string, virtualModuleId: string) =>
+	(id: string, virtualModuleId: string, cssFileId: string) =>
 	(babel: Babel): PluginObj => {
 		// let programPath: babelCore.NodePath<babelCore.types.Program> | null
 
 		return {
 			name: 'dostyle:transform',
 			visitor: {
-				Program: {
-					// enter(path) {
-					// 	if (path.isProgram()) {
-					// 		programPath = path
-					// 	}
-					// },
-					exit(path) {
-						if (path.isProgram()) {
-							const locals =
-								FilesTransformedComponents.get(id)?.locals
-
-							if (!locals) return
-
-							locals.removeOnProgramExit.forEach(path =>
-								path.remove()
-							)
-
-							locals.removeOnProgramExit.clear()
-						}
-					},
-				},
 				TaggedTemplateExpression(path) {
 					if (!path.isTaggedTemplateExpression()) return
 
@@ -42,10 +21,9 @@ const Transformer =
 						path.node.tag.type === 'MemberExpression' &&
 						path.node.tag.object.type === 'Identifier' &&
 						path.node.tag.property.type === 'Identifier' &&
+						path.node.quasi.type === 'TemplateLiteral' &&
 						path.node.tag.object.name === 'styled'
 					) {
-						const elementName = path.node.tag.property.name
-
 						const styledScope = path.scope.getBinding('styled')
 
 						if (
@@ -56,6 +34,28 @@ const Transformer =
 							styledScope?.path.parent.source.value ===
 								virtualModuleId
 						) {
+							const className = RandomClassName()
+
+							const elementName = path.node.tag.property.name
+							const rawRules = path.node.quasi.quasis
+								.map(
+									quasi =>
+										quasi.value.cooked ?? quasi.value.raw
+								)
+								.join('')
+
+							const rulesEntries = rawRules
+								.split(';')
+								.filter(rule => rule.trim() !== '')
+								.map(rule =>
+									rule.split(':').map(part => part.trim())
+								)
+
+							FilesSelectors[cssFileId].push({
+								selectors: [`.${className}`],
+								rulesEntries,
+							})
+
 							path.replaceWith(
 								babel.types.callExpression(
 									babel.types.identifier('styled'),
@@ -68,7 +68,7 @@ const Transformer =
 												),
 												babel.types.arrayExpression([
 													babel.types.stringLiteral(
-														RandomClassName()
+														className
 													),
 												])
 											),

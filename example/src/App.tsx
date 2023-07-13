@@ -2,19 +2,19 @@ import { FC, useRef } from 'react'
 
 import styled from '@dostyle/react'
 
-import OutsideParagraph, { OutsideTitle } from './AppStyles'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-// eslint-disable-next-line import/no-unresolved, import/extensions
-import { ComponentSubTitle } from './index.tsx'
+// eslint-disable-next-line import/no-unresolved
+import { ComponentSubTitle } from 'Components/Component'
 
-const Container = styled.div<{ width: number }>`
+import OutsideParagraph, { OutsideTitle } from './AppStyles'
+
+const Container = styled.div`
 	background-color: blue;
-	width: ${({ width }) => width}px;
 `
 
-const Text = styled.p<{ color: string }>`
-	color: ${props => props.color};
+const Text = styled.p`
+	color: red;
 `
 
 const Input = styled.input``

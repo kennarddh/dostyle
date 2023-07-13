@@ -1,62 +1,55 @@
 /* eslint-disable security/detect-object-injection */
-import { Plugin } from 'vite'
+import { FilterPattern, Plugin, createFilter, normalizePath } from 'vite'
 
-import babelCore, { BabelFileResult, transformSync } from '@babel/core'
-import { Scope } from '@babel/traverse'
+import { BabelFileResult, transformSync } from '@babel/core'
 
-import { FilesTransformedComponents } from './GlobalData'
+import { FilesSelectors } from './GlobalData'
 import PreTransformer from './PreTransformer'
 import Transformer from './Transformer'
 
 export interface IDoStyleOptions {
-	extensions?: string[]
-	moduleRoot?: string | string[]
+	include?: FilterPattern
+	exclude?: FilterPattern
 }
 
-export type IExportTransformedComponent = {
-	exportName: string
-	localName: string
-} & ({ default: true } | { default?: never })
+export type IRulesEntries = string[][]
 
-export interface ILocalTransformedComponent {
-	classNames: string[]
-	name: string | null
-	scope: Scope
-	element: {
-		name: string
-		rules: IRules
-	}
-}
-export interface ITransformedComponents {
-	exports: IExportTransformedComponent[]
-	locals: {
-		components: ILocalTransformedComponent[]
-		removeOnProgramExit: Set<babelCore.NodePath>
-	}
+export type ISelector = {
+	selectors: string[]
+	rulesEntries: IRulesEntries
 }
 
-export type IFilesTransformedComponents = Map<string, ITransformedComponents>
+export type IFilesSelectors = Record<string, ISelector[]>
 
-export type IRules = Record<string, string>
+const UrlToId = (url: string) => {
+	const splited = url.split('?', 1)
+
+	return splited[0]
+}
 
 const DoStyle = ({
-	extensions = ['jsx', 'tsx'],
+	include = '**/*.[jt]sx',
+	exclude = [],
 }: IDoStyleOptions = {}): Plugin => {
 	// let config: ResolvedConfig | null = null
+
+	const filter = createFilter(include, exclude)
 
 	const virtualModuleId = 'virtual:do-style-react'
 	const resolvedVirtualModuleId = '\0' + virtualModuleId
 
 	return {
 		name: 'do-style',
-		enforce: 'pre',
+		enforce: 'post',
 		// configResolved(configResolved) {
 		// 	config = configResolved
 		// },
-		resolveId(id) {
+		resolveId(url) {
+			const id = UrlToId(url)
+
 			if (id === virtualModuleId) {
 				return resolvedVirtualModuleId
-			}
+			} else if (id.endsWith('_do_style.css')) return url
 		},
 		load(id) {
 			if (id === resolvedVirtualModuleId) {
@@ -79,21 +72,41 @@ const DoStyle = ({
 
 					export default styled
 				`
+			} else if (FilesSelectors[id]) {
+				console.log('load css', id, FilesSelectors)
+
+				return FilesSelectors[id].reduce(
+					(acc, selector) =>
+						`${acc}${selector.selectors.join(
+							','
+						)} {${selector.rulesEntries.reduce(
+							(acc, [prop, value]) => `${acc}${prop}:${value};`,
+							''
+						)}}`,
+					''
+				)
 			}
 		},
-		transform(src, id) {
-			if (!extensions.some(ext => id.endsWith(ext))) return
+		handleHotUpdate(ctx) {
+			console.log('hmr', ctx.file)
+
+			// for (const module of ctx.modules) {
+			// 	module.id
+			// }
+		},
+		transform(src, url) {
+			const id = UrlToId(url)
+
+			if (!filter(id)) return
 
 			console.log('transform', id)
 
-			if (!FilesTransformedComponents.has(id))
-				FilesTransformedComponents.set(id, {
-					exports: [],
-					locals: {
-						components: [],
-						removeOnProgramExit: new Set(),
-					},
-				})
+			const cssFileId = `${normalizePath(url).replace(
+				/\.[jt]sx?$/,
+				''
+			)}_do_style.css?transformTime=${Date.now()}`
+
+			if (!FilesSelectors[cssFileId]) FilesSelectors[cssFileId] = []
 
 			const result = transformSync(src, {
 				configFile: false,
@@ -101,14 +114,18 @@ const DoStyle = ({
 				presets: ['@babel/preset-typescript'],
 				plugins: [
 					PreTransformer(virtualModuleId),
-					Transformer(id, virtualModuleId),
+					Transformer(id, virtualModuleId, cssFileId),
 				],
 			}) as BabelFileResult // => { code, map, ast }
 
 			// console.log(id, '\n', src, '\n\n', result.code, '\n\n\n')
 
+			const newCode = `${result.code}\nimport ${JSON.stringify(
+				cssFileId
+			)}`
+
 			return {
-				code: result.code as string,
+				code: newCode,
 				map: result.map,
 			}
 		},
