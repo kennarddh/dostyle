@@ -65,14 +65,14 @@ const DoStyle = ({
 						createElement,
 					} from 'react'
 				
-				    const styled = (element, { className }) => ({ children }) => {
+				    const styled = (element, { className: doStyleClassName }) => ({ children, className }) => {
 						const parsedChildren = Array.isArray(children)
 							? children
 							: [children]
 
 						return createElement(
 							element,
-							{ className: className.join(' ') },
+							{ className: doStyleClassName.join(' ') + (className ? ' ' + className: '') },
 							...parsedChildren
 						)
 					}
